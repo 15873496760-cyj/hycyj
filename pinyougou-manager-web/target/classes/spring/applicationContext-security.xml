@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--首先定义放行的静态资源-->
+        <http pattern="/login.html" security="none"/>
+    <http pattern="/css/**" security="none"/>
+    <http pattern="/js/**" security="none"/>
+    <http pattern="/plugins/**" security="none"/>
+    <http pattern="/img/**" security="none"/>
+
+    <!--配置登录请求的处理-->
+    <http use-expressions="false">
+        <!--配置角色-->
+        <intercept-url pattern="/**" access="ROLE_ADMIN"/>
+        <!--配置自定义form-->
+        <form-login default-target-url="/admin/index.html" login-page="/login.html"
+            always-use-default-target="true" authentication-failure-url="/login.html"/>
+        <!--配置对框架的处理-->
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+        <!--配置csrf的安全问题-->
+        <csrf disabled="true"/>
+        <!--配置注销-->
+        <logout/>
+    </http>
+
+    <!--配置认证管理器-->
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="zhangsan" password="123" authorities="ROLE_ADMIN"/>
+                <user name="admin" password="456" authorities="ROLE_ADMIN"/>
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>
